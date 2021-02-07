@@ -120,6 +120,26 @@ class TestToNumeric(GenericTransformerTest):
                 (transformed['a_str'] >= (1+tolerance)*transformed['a'])
             ].empty
         )
+
+class TestStandardPipe(unittest.TestCase):
+    test_df = pd.DataFrame({
+        'a': np.random.rand(50),
+        'b': np.random.rand(50),
+        'c': [str(int(x*4)) for x in np.random.rand(50)],
+    })
+    num_features = ['a', 'b']
+    cat_features = ['c']
+
+    def test_pipe(self):
+        preprocessing = pt.standard_preprocessing_pipe(
+            num_features=self.num_features,
+            cat_features=self.cat_features
+        )
+        transformed = preprocessing.fit_transform(self.test_df)
+        print(transformed)
+
+
+
         
 if __name__ == '__main__':
     unittest.main()
