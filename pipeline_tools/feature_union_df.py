@@ -29,7 +29,6 @@ class FeatureUnionDf(FeatureUnion):
             hstack of results of transformers. sum_n_components is the
             sum of n_components (output dimension) over transformers.
         """
-        print('stu')
         results = self._parallel_func(X, y, fit_params, _fit_transform_one)
         if not results:
             # All transformers are None
