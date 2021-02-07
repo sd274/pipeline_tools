@@ -3,40 +3,52 @@ import pipeline_tools as pt
 import pandas as pd
 import numpy as np
 
+class GenericTransformerTest(unittest.TestCase):
+    test_df = pd.DataFrame(
+        {'a': [1, 2, 3], 'b': [5, 6, 6]}
+    )
+    TransformerClass = pt.BasePipeStep
+    transformer = TransformerClass()
 
-class TestBaseTransformer(unittest.TestCase):
+    def test_fitReturn(self):
+        """
+        fit function should return a copy of the transformer.
+        """
+        fit_return = self.transformer.fit(self.test_df)
+        self.assertTrue(isinstance(fit_return, self.TransformerClass))
+
+
+
+class TestBaseTransformer(GenericTransformerTest):
     """
     Base class should leave the data frame unchanged. This class tests this.
     """
 
     def test_transformation(self):
-        test_df = pd.DataFrame(
-            {'a': [1, 2, 3], 'b': [5, 6, 6]}
-        )
-        transformer = pt.BasePipeStep()
-        transformed = transformer.fit_transform(test_df).copy()
-        self.assertTrue(test_df.equals(transformed))
+        transformed = self.transformer.fit_transform(self.test_df).copy()
+        self.assertTrue(self.test_df.equals(transformed))
 
 
-class SelectColumns(unittest.TestCase):
+class SelectColumns(GenericTransformerTest):
     """
     Transfromer should filter the columns in the dataframe.
     Data in the columns should be the same
     """
-
-    def test_transformation(self):
-        test_df = pd.DataFrame({
+    test_df = pd.DataFrame({
             'a': [1, 2, 3],
             'b': [5, 6, 6],
             'c': [4, 5, 7]
         })
-        columns = ['b', 'c']
-        transformer = pt.SelectColumns(columns)
-        transformed = transformer.fit_transform(test_df).copy()
-        self.assertTrue(test_df[columns].equals(transformed))
+    columns = ['b', 'c']
+    TransformerClass = pt.SelectColumns
+    transformer = TransformerClass(columns)
+
+    def test_transformation(self):
+        transformed = self.transformer.fit_transform(self.test_df).copy()
+        self.assertTrue(self.test_df[self.columns].equals(transformed))
 
 
-class TestHotEncoder(unittest.TestCase):
+class TestHotEncoder(GenericTransformerTest):
 
     test_df = pd.DataFrame({
         'a': [1, 2, 3],
@@ -44,15 +56,8 @@ class TestHotEncoder(unittest.TestCase):
         'c': ['a', 'b', 'c']
     })
     columns = ['c']
-    transformer = pt.OneHotEncoderDf(columns)
-    transformer.fit(test_df)
-
-    def test_onehotfit(self):
-        """
-        fit function should return a copy of the transformer.
-        """
-        fit_return = self.transformer.fit(self.test_df)
-        self.assertTrue(isinstance(fit_return, pt.OneHotEncoderDf))
+    TransformerClass = pt.OneHotEncoderDf
+    transformer = TransformerClass(columns)
 
     def test_onehottransform(self):
         """
@@ -66,15 +71,16 @@ class TestHotEncoder(unittest.TestCase):
         self.assertTrue(transformed.equals(expected))
 
 
-class TestScaleNumeric(unittest.TestCase):
+class TestScaleNumeric(GenericTransformerTest):
 
     test_df = pd.DataFrame({
         'a': np.random.rand(50),
         'b': np.random.rand(50),
     })
     columns = ['a', 'b']
-    transformer = pt.ScaleNumeric(columns)
-    transformer.fit(test_df)
+    TransformerClass = pt.ScaleNumeric
+    transformer = TransformerClass(columns)
+
 
     def test_transform(self):
         """
@@ -90,7 +96,7 @@ class TestScaleNumeric(unittest.TestCase):
         self.assertTrue(transformed.columns.tolist() == self.columns)
 
 
-class TestToNumeric(unittest.TestCase):
+class TestToNumeric(GenericTransformerTest):
 
     test_df = pd.DataFrame({
         'a': np.random.rand(50),
@@ -99,8 +105,8 @@ class TestToNumeric(unittest.TestCase):
     test_df['a_str'] = test_df.a.astype('str').copy()
 
     columns = ['a', 'b', 'a_str']
-    transformer = pt.ToNumeric(columns)
-    transformer.fit(test_df)
+    TransformerClass = pt.ToNumeric
+    transformer = TransformerClass(columns)
 
     def test_transform(self):
         transformed = self.transformer.fit_transform(self.test_df)
