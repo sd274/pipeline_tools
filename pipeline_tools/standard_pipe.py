@@ -1,8 +1,9 @@
 """
 Generating the standard pipeline that will get us 90% to a lovely model.
 """
-from sklearn.pipeline import Pipeline, FeatureUnion
+from sklearn.pipeline import Pipeline
 from .simple_transformers import SelectColumns, OneHotEncoderDf, ToNumeric, ScaleNumeric
+from .feature_union_df import FeatureUnionDf
 
 def standard_preprocessing_pipe(num_features=[], cat_features=[]):
 
@@ -18,7 +19,7 @@ def standard_preprocessing_pipe(num_features=[], cat_features=[]):
         ('scale_feautes', ScaleNumeric(num_features)),
     ])
 
-    preprocessing = FeatureUnion([
+    preprocessing = FeatureUnionDf([
         ('numeric_pipe', numeric_prepipe),
         ('cat_prepipe', cat_prepipe)
     ])

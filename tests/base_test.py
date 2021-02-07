@@ -65,6 +65,7 @@ class TestHotEncoder(GenericTransformerTest):
         """
         transformed = self.transformer.fit_transform(self.test_df)
         expected = pd.DataFrame({
+            'c_a': [1.0, 0.0, 0.0],
             'c_b': [0.0, 1.0, 0.0],
             'c_c': [0.0, 0.0, 1.0]
         })
@@ -136,7 +137,14 @@ class TestStandardPipe(unittest.TestCase):
             cat_features=self.cat_features
         )
         transformed = preprocessing.fit_transform(self.test_df)
-        print(transformed)
+        for col in self.num_features:
+            tolerance = 0.05
+            self.assertTrue(
+                (transformed[col].mean() >= (0-tolerance)) and (transformed[col].mean() <= (0+tolerance))
+            )
+            self.assertTrue(
+                (transformed[col].std() >= (1-tolerance)) and (transformed[col].std() <= (1+tolerance))
+            )
 
 
 
