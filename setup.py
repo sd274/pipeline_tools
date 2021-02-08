@@ -12,7 +12,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     install_requires=[
-        'sklearn==0.23.2',
+        'scikit-learn==0.23.2',
         'pandas'
     ],
     classifiers=[
