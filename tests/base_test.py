@@ -123,11 +123,20 @@ class TestToNumeric(GenericTransformerTest):
         )
 
 class TestStandardPipe(unittest.TestCase):
+    
+    # generate a random index to check the index is preserved.
+    test_index = []
+    first_index = 1
+    for i in np.random.randint(low=1, high=10, size=50):
+        test_index.append(first_index)
+        first_index += int(i*10)
+        
+        
     test_df = pd.DataFrame({
         'a': np.random.rand(50),
         'b': np.random.rand(50),
         'c': [str(int(x*4)) for x in np.random.rand(50)],
-    })
+    }, index = test_index)
     num_features = ['a', 'b']
     cat_features = ['c']
 
@@ -137,8 +146,10 @@ class TestStandardPipe(unittest.TestCase):
             cat_features=self.cat_features
         )
         transformed = preprocessing.fit_transform(self.test_df)
+        self.assertTrue(transformed.sort_index().index.equals(self.test_df.sort_index().index))
         for col in self.num_features:
             tolerance = 0.05
+            print(transformed[col].mean())
             self.assertTrue(
                 (transformed[col].mean() >= (0-tolerance)) and (transformed[col].mean() <= (0+tolerance))
             )
@@ -150,4 +161,6 @@ class TestStandardPipe(unittest.TestCase):
 
         
 if __name__ == '__main__':
+    import sklearn 
+    print(sklearn.__version__)
     unittest.main()
