@@ -4,5 +4,6 @@ A simple collection of pipeline transformation tools that can be used within a s
 
 # Things to
 
-- Feature Union that returns a dataframe rather than an array.
+- ~~Feature Union that returns a dataframe rather than an array.~~
+- Write tests for feature union 
 - Function for doing feature engineering tasks - perhaps clustering?
