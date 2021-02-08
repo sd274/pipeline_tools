@@ -65,6 +65,7 @@ class TestHotEncoder(GenericTransformerTest):
         """
         transformed = self.transformer.fit_transform(self.test_df)
         expected = pd.DataFrame({
+            'c_a': [1.0, 0.0, 0.0],
             'c_b': [0.0, 1.0, 0.0],
             'c_c': [0.0, 0.0, 1.0]
         })
@@ -120,6 +121,33 @@ class TestToNumeric(GenericTransformerTest):
                 (transformed['a_str'] >= (1+tolerance)*transformed['a'])
             ].empty
         )
+
+class TestStandardPipe(unittest.TestCase):
+    test_df = pd.DataFrame({
+        'a': np.random.rand(50),
+        'b': np.random.rand(50),
+        'c': [str(int(x*4)) for x in np.random.rand(50)],
+    })
+    num_features = ['a', 'b']
+    cat_features = ['c']
+
+    def test_pipe(self):
+        preprocessing = pt.standard_preprocessing_pipe(
+            num_features=self.num_features,
+            cat_features=self.cat_features
+        )
+        transformed = preprocessing.fit_transform(self.test_df)
+        for col in self.num_features:
+            tolerance = 0.05
+            self.assertTrue(
+                (transformed[col].mean() >= (0-tolerance)) and (transformed[col].mean() <= (0+tolerance))
+            )
+            self.assertTrue(
+                (transformed[col].std() >= (1-tolerance)) and (transformed[col].std() <= (1+tolerance))
+            )
+
+
+
         
 if __name__ == '__main__':
     unittest.main()

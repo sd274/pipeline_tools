@@ -14,7 +14,7 @@ class SelectColumns(BasePipeStep):
 class OneHotEncoderDf(SelectColumns):
     
     def fit(self, X, y=None):
-        self.one_hot = OneHotEncoder(handle_unknown='error', drop='first')
+        self.one_hot = OneHotEncoder(handle_unknown='ignore')
         self.one_hot.fit(X[self.columns])
         return self
     
