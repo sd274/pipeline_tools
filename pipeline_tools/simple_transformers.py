@@ -22,7 +22,8 @@ class OneHotEncoderDf(SelectColumns):
         X = X.copy()[self.columns]        
         return pd.DataFrame(
             self.one_hot.transform(X).toarray(),
-            columns = self.one_hot.get_feature_names(self.columns)
+            columns = self.one_hot.get_feature_names(self.columns),
+            index = X.index
         )
 
 
