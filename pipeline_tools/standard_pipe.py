@@ -15,7 +15,7 @@ def standard_preprocessing_pipe(num_features=[], cat_features=[]):
     numeric_prepipe = Pipeline([
         ('select_cols', SelectColumns(num_features)),
         ('cast_as_float', ToNumeric(num_features)),
-        # ('impute', FillNumericData(num_features)),
+        ('impute', FillNumericData(num_features)),
         ('scale_feautes', ScaleNumeric(num_features)),
     ])
 

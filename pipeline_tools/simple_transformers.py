@@ -1,6 +1,7 @@
 import pandas as pd
 from .base import BasePipeStep
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
 
 class SelectColumns(BasePipeStep):
 
@@ -25,6 +26,22 @@ class OneHotEncoderDf(SelectColumns):
             columns = self.one_hot.get_feature_names(self.columns),
             index = X.index
         )
+
+class FillNumericData(BasePipeStep):
+    imputer = SimpleImputer()
+
+    def __init__(self, columns, impute_strategy='mean', **kwargs):
+        self.imputer = SimpleImputer(strategy=impute_strategy)
+        self.columns = columns
+        self.impute_strategy = impute_strategy
+        
+
+    def fit(self, X, y=None):
+        self.imputer.fit(X, y)
+        return self
+
+    def transform(self, X):
+        return pd.DataFrame(self.imputer.transform(X), columns = X.columns)
 
 
 class ScaleNumeric(SelectColumns):
