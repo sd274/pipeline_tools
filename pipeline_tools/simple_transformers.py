@@ -13,14 +13,18 @@ class SelectColumns(BasePipeStep):
         return X[self.columns]
 
 class OneHotEncoderDf(SelectColumns):
+
+    def __init__(self, columns = [], fillna_values='NULL'):
+        self.columns = columns
+        self.fillna_values= fillna_values
     
     def fit(self, X, y=None):
         self.one_hot = OneHotEncoder(handle_unknown='ignore')
-        self.one_hot.fit(X[self.columns])
+        self.one_hot.fit(X[self.columns].fillna(self.fillna_values)))
         return self
     
     def transform(self, X):
-        X = X.copy()[self.columns]        
+        X = X.copy()[self.columns].fillna(self.fillna_values)        
         return pd.DataFrame(
             self.one_hot.transform(X).toarray(),
             columns = self.one_hot.get_feature_names(self.columns),
