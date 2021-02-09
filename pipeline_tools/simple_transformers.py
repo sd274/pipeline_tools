@@ -20,7 +20,7 @@ class OneHotEncoderDf(SelectColumns):
     
     def fit(self, X, y=None):
         self.one_hot = OneHotEncoder(handle_unknown='ignore')
-        self.one_hot.fit(X[self.columns].fillna(self.fillna_values)))
+        self.one_hot.fit(X[self.columns].fillna(self.fillna_values))
         return self
     
     def transform(self, X):
@@ -45,7 +45,7 @@ class FillNumericData(BasePipeStep):
         return self
 
     def transform(self, X):
-        return pd.DataFrame(self.imputer.transform(X), columns = X.columns)
+        return pd.DataFrame(self.imputer.transform(X), columns = X.columns, index=X.index)
 
 
 class ScaleNumeric(SelectColumns):

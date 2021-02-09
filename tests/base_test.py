@@ -146,6 +146,7 @@ class TestStandardPipe(unittest.TestCase):
             cat_features=self.cat_features
         )
         transformed = preprocessing.fit_transform(self.test_df)
+
         self.assertTrue(transformed.sort_index().index.equals(self.test_df.sort_index().index))
         for col in self.num_features:
             tolerance = 0.05
