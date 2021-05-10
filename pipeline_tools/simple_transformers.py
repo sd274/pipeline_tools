@@ -41,7 +41,7 @@ class FillNumericData(BasePipeStep):
         
 
     def fit(self, X, y=None):
-        self.imputer.fit(X, y)
+        self.imputer.fit(X[self.columns], y)
         return self
 
     def transform(self, X):
